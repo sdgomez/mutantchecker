@@ -1,4 +1,4 @@
-rootProject.name = 'multiprojectgradle'
-include "app"
-include "module1"
+rootProject.name = 'mutantchecker'
+include "modulolectura"
+include "moduloescritura"
 

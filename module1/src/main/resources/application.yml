@@ -1,8 +1,0 @@
-micronaut:
-  executors:
-    consumer:
-      type: FIXED
-  application:
-    name: module1
-  server:
-    port: 8080

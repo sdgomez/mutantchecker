@@ -1,8 +1,0 @@
-micronaut:
-  executors:
-    consumer:
-      type: FIXED
-  application:
-    name: app
-  server:
-    port: 8086

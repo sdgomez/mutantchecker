@@ -1,0 +1,61 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: modulolectura
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: modulolectura
+  template:
+    metadata:
+      labels:
+        app: modulolectura
+    spec:
+      nodeSelector:
+        "kubernetes.io/os": linux
+      containers:
+        - name: modulolectura
+          image: crmutantes.azurecr.io/modulolectura:v3
+          resources:
+            requests:
+              cpu: 500m
+              memory: 512Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          ports:
+            - containerPort: 8086
+          env:
+            - name: modulolectura
+              value: "modulolectura"
+          livenessProbe:
+            httpGet:
+              path: /mutantchecker/queries/health
+              port: 8086
+            initialDelaySeconds: 300
+            periodSeconds: 4
+            timeoutSeconds: 5
+            failureThreshold: 3
+          lifecycle:
+            preStop:
+              exec:
+                command: [ "sleep", "90" ]
+          readinessProbe:
+            httpGet:
+              path: /mutantchecker/queries/health
+              port: 8086
+            initialDelaySeconds: 30
+            periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: modulolectura
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 8086
+  selector:
+    app: modulolectura
