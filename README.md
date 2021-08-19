@@ -1,4 +1,6 @@
 # Correr en local con docker
+IMPORTANTE: Para correr en local solicitarme por favor 
+la URI de la base de datos y de la caché.
  1. Hacer clean de los jars viejos (RECOMENDADO)
     ~~~
     gradle :modulolectura:clean
