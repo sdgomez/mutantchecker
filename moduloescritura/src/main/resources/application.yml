@@ -1,0 +1,17 @@
+micronaut:
+  context-path: /${APPNAME}
+  executors:
+    consumer:
+      type: FIXED
+  application:
+    name: ${APPNAME}
+  server:
+    port: ${APPPORT}
+mongodb:
+  uri: ${MONGODBURI}
+  database: ${MONGODBNAME}
+  cluster:
+    maxWaitQueueSize: ${MAXWAITQUEUESIZE:5}
+    connectionPool:
+    maxSize: ${MAXPOOLSIZE:20}
+redis.uri: ${CACHEURI}

@@ -1,0 +1,125 @@
+plugins {
+    id 'java'
+    id 'application'
+    id "com.diffplug.eclipse.apt" version "3.22.0"
+    id "groovy"
+    id "com.github.johnrengelman.shadow" version "6.0.0"
+    id 'jacoco'
+}
+
+jacoco {
+    toolVersion = "0.8.5"
+}
+jacocoTestReport {
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                    "ApplicationLectura.class",
+                    "infraestructura/persistencia/mongo/*",
+                    "infraestructura/cache/*"
+            ])
+        }))
+    }
+    reports {
+        xml.enabled true
+        xml.destination file("${buildDir}/jacocoxml/jacocoxml.xml")
+        csv.enabled false
+        html.destination file("${buildDir}/jacocoHtml")
+    }
+}
+jacoco {
+    applyTo run
+}
+
+tasks.register('applicationCodeCoverageReport', JacocoReport) {
+    executionData run
+    sourceSets sourceSets.main
+}
+
+jacocoTestReport.dependsOn(test)
+
+jar.dependsOn(jacocoTestReport)
+
+
+group 'org.example'
+version '1.0'
+
+configurations {
+    // for dependencies that are needed for development only
+    developmentOnly
+}
+
+repositories {
+    mavenCentral()
+}
+
+application {
+    mainClass = 'ApplicationLectura' // <1>
+}
+
+dependencies {
+    annotationProcessor(platform("io.micronaut:micronaut-bom:$micronautVersion"))
+    annotationProcessor("io.micronaut:micronaut-inject-java")
+    annotationProcessor("io.micronaut:micronaut-validation")
+    implementation(platform("io.micronaut:micronaut-bom:$micronautVersion"))
+    implementation("io.micronaut:micronaut-inject")
+    implementation("io.micronaut:micronaut-validation")
+    implementation("io.micronaut:micronaut-runtime")
+    implementation("javax.annotation:javax.annotation-api")
+    implementation("io.micronaut:micronaut-http-server-netty")
+    implementation("io.micronaut:micronaut-http-client")
+    implementation("io.micronaut.reactor:micronaut-reactor")
+    implementation("io.micronaut.rabbitmq:micronaut-rabbitmq")
+    runtimeOnly("ch.qos.logback:logback-classic")
+    implementation("io.micronaut.mongodb:micronaut-mongo-reactive")
+    implementation("io.micronaut.redis:micronaut-redis-lettuce")
+    testAnnotationProcessor "io.micronaut:micronaut-inject-java:$micronautVersion"
+    testImplementation("org.junit.jupiter:junit-jupiter-api")
+    testImplementation("io.micronaut.test:micronaut-test-junit5:2.3.7")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.1")
+    testImplementation "org.mockito:mockito-junit-jupiter:3.11.2"
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: '3.11.2'
+}
+
+test.classpath += configurations.developmentOnly
+
+// use JUnit 5 platform
+test {
+    useJUnitPlatform()
+    def envTest = ['MONGODBNAME' : 'xmen' , 'MONGODBURI' : 'mongodb://sdgomez:sg1067904806@cluster0-shard-00-00.ugodx.mongodb.net:27017,cluster0-shard-00-01.ugodx.mongodb.net:27017,cluster0-shard-00-02.ugodx.mongodb.net:27017/xmen?ssl=true&replicaSet=atlas-zt318k-shard-0&authSource=admin&retryWrites=false&maxIdleTimeMS=120000&w=majority' , 'APPNAME' : 'transf_dig-sarlaft_digital-ms' , 'APPPORT' : '8080', 'APPNAME' : 'mutantchecker' , 'MAXWAITQUEUESIZE' : 5, 'MAXPOOLSIZE' : 20]
+    environment(envTest)
+}
+
+java {
+    sourceCompatibility = JavaVersion.toVersion('11')
+    targetCompatibility = JavaVersion.toVersion('11')
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+    options.compilerArgs.addAll([
+            '-parameters',
+            // enables incremental compilation
+            '-Amicronaut.processing.incremental=true',
+            '-Amicronaut.processing.annotations=modulolectura.*',
+            "-Amicronaut.processing.group=$project.group",
+            "-Amicronaut.processing.module=$project.name",
+    ])
+}
+
+shadowJar {
+    mainClassName = 'ApplicationLectura'
+    mergeServiceFiles()
+}
+
+tasks.withType(JavaExec) {
+    classpath += configurations.developmentOnly
+    jvmArgs('-XX:TieredStopAtLevel=1', '-Dcom.sun.management.jmxremote')
+    if (gradle.startParameter.continuous) {
+        systemProperties(
+                'micronaut.io.watch.restart':'true',
+                'micronaut.io.watch.enabled':'true',
+                "micronaut.io.watch.paths":"src/main"
+        )
+    }
+}
