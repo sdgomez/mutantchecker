@@ -11,6 +11,7 @@ ENV MAXWAITQUEUESIZE=50
 ENV MAXPOOLSIZE=5
 ENV MONGODBNAME="xmen"
 ENV MONGODBURI=""
+ENV CACHEURI=""
 
 CMD java -Dcom.sun.management.jmxremote -noverify ${JAVA_OPTS} -jar modulolectura.jar
 

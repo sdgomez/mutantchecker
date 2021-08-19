@@ -14,4 +14,4 @@ mongodb:
     maxWaitQueueSize: ${MAXWAITQUEUESIZE:5}
     connectionPool:
     maxSize: ${MAXPOOLSIZE:20}
-redis.uri:
+redis.uri: ${CACHEURI}
