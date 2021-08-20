@@ -51,7 +51,8 @@ public class CacheService implements CacheInterface {
                 setValor("numeroDeHumanos", numeroDeHumanos.toString());
             }
             if (numeroDeHumanos > 0 && numeroDeMutantes > 0){
-                Float ratio = (float) (numeroDeMutantes / (numeroDeMutantes + numeroDeHumanos));
+                Long total = numeroDeMutantes + numeroDeHumanos;
+                Float ratio = (float) (numeroDeMutantes.floatValue() / total.floatValue());
                 setValor("ratio", ratio.toString());
             }else{
                 Float ratio = 0.0f;
