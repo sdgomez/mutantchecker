@@ -126,3 +126,4 @@ información disponible se devuelve y sino se va a base de datos.
 - Logueo
 - Monitoreo
 - Circuit Breaker hacia la base de datos y caché
+- Documentación de la API con swagger
