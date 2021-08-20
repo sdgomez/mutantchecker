@@ -93,7 +93,7 @@ public class ValidarMutanteTest {
         doReturn(Mono.just(persona)).when(personaRepositorio).guardar(any());
         ValidateMutanteRequestDTO validateMutanteRequestDTO = new ValidateMutanteRequestDTO(dna);
         try{
-            final String result = client.toBlocking().retrieve(HttpRequest.POST("/mutant", validateMutanteRequestDTO), String.class);
+            client.toBlocking().retrieve(HttpRequest.POST("/mutant", validateMutanteRequestDTO), String.class);
         } catch (Exception e){
             Assertions.assertEquals(
                     "Forbidden",

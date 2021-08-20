@@ -124,3 +124,5 @@ información disponible se devuelve y sino se va a base de datos.
 - Diagrama de arquitectura
 - Mejor manejo de errores
 - Logueo
+- Monitoreo
+- Circuit Breaker hacia la base de datos y caché
