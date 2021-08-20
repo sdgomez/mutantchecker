@@ -88,7 +88,7 @@ todo el potencial de la arquitectura planteada.
 - Consultar las estadisticas de mutantes y humanos:
 ~~~
 
-curl -i -k --location --request GET 'http://localhost:8080/mutantchecker/queries/stats' \
+curl -i -k --location --request GET 'http://localhost:8086/mutantchecker/queries/stats' \
 --data-raw ''
 ~~~
 
